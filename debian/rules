@@ -7,6 +7,10 @@ ifneq ($(DEB_HOST_ARCH), amd64)
 CONFIGURE_ARGS = --disable-flto
 endif
 
+ifneq ($(DEB_HOST_ARCH_OS), linux)
+CONFIGURE_ARGS = --with-libbsd
+endif
+
 LIBRARY = libunbound2
 DOPACKAGES = $(shell dh_listpackages)
 
@@ -33,12 +37,14 @@ ifneq (,$(filter unbound unbound-anchor unbound-host,$(DOPACKAGES)))
 	PYTHON_VERSION="$(shell py3versions -vd)" \
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="-Wl,--as-needed $(LDFLAGS)" \
 		dh_auto_configure -- \
-		--enable-subnet \
 		--disable-rpath \
 		--with-pidfile=/run/unbound.pid \
 		--with-rootkey-file=/var/lib/unbound/root.key \
 		--with-libevent \
 		--with-pythonmodule \
+		--enable-dnstap \
+		--enable-systemd \
+		--with-dnstap-socket-path=/run/dnstap.sock \
 		--libdir=/usr/lib \
 		$(CONFIGURE_ARGS)
 	$(MAKE)
@@ -49,7 +55,6 @@ endif
 	# second build -- build libunbound only, against nettle
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="-Wl,--as-needed $(LDFLAGS)" \
 		dh_auto_configure -- \
-		--enable-subnet \
 		--disable-rpath \
 		--with-libunbound-only \
 		--with-nettle \
@@ -57,6 +62,7 @@ endif
 		--without-libevent \
 		--without-pythonmodule \
 		--without-pyunbound \
+		--enable-event-api \
 		$(CONFIGURE_ARGS)
 	$(MAKE)
 	$(MAKE) install DESTDIR="$(CURDIR)/debian/tmp-lib"
@@ -69,7 +75,6 @@ ifneq (,$(filter python-unbound,$(DOPACKAGES)))
 	PYTHON_VERSION="$(shell pyversions -vd)" \
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="-Wl,--as-needed $(LDFLAGS)" \
 		dh_auto_configure -- \
-		--enable-subnet \
 		--disable-rpath \
 		--with-pythonmodule \
 		--with-pyunbound \
@@ -89,7 +94,6 @@ ifneq (,$(filter python3-unbound,$(DOPACKAGES)))
 	PYTHON_VERSION="$(shell py3versions -vd)" \
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="-Wl,--as-needed $(LDFLAGS)" \
 		dh_auto_configure -- \
-		--enable-subnet \
 		--disable-rpath \
 		--with-pythonmodule \
 		--with-pyunbound \
