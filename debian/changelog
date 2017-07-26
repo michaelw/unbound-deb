@@ -1,3 +1,9 @@
+unbound (1.6.0-2ubuntu1instart1) precise; urgency=low
+
+  * --enable-subnet
+
+ -- Michael Weber <mweber@instartlogic.com>  Wed, 26 Jul 2017 11:53:33 -0700
+
 unbound (1.6.0-2ubuntu1) zesty; urgency=medium
 
   * Merge from Debian (LP: #1655793). Remaining changes:

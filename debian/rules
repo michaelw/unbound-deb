@@ -33,6 +33,7 @@ ifneq (,$(filter unbound unbound-anchor unbound-host,$(DOPACKAGES)))
 	PYTHON_VERSION="$(shell py3versions -vd)" \
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="-Wl,--as-needed $(LDFLAGS)" \
 		dh_auto_configure -- \
+		--enable-subnet \
 		--disable-rpath \
 		--with-pidfile=/run/unbound.pid \
 		--with-rootkey-file=/var/lib/unbound/root.key \
@@ -48,6 +49,7 @@ endif
 	# second build -- build libunbound only, against nettle
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="-Wl,--as-needed $(LDFLAGS)" \
 		dh_auto_configure -- \
+		--enable-subnet \
 		--disable-rpath \
 		--with-libunbound-only \
 		--with-nettle \
@@ -67,6 +69,7 @@ ifneq (,$(filter python-unbound,$(DOPACKAGES)))
 	PYTHON_VERSION="$(shell pyversions -vd)" \
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="-Wl,--as-needed $(LDFLAGS)" \
 		dh_auto_configure -- \
+		--enable-subnet \
 		--disable-rpath \
 		--with-pythonmodule \
 		--with-pyunbound \
@@ -86,6 +89,7 @@ ifneq (,$(filter python3-unbound,$(DOPACKAGES)))
 	PYTHON_VERSION="$(shell py3versions -vd)" \
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="-Wl,--as-needed $(LDFLAGS)" \
 		dh_auto_configure -- \
+		--enable-subnet \
 		--disable-rpath \
 		--with-pythonmodule \
 		--with-pyunbound \
