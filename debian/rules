@@ -30,6 +30,7 @@ build-indep:
 binary-arch: build
 	dh_testdir
 	dh_autoreconf
+	libtoolize --install
 	dh_autotools-dev_updateconfig
 
 ifneq (,$(filter unbound unbound-anchor unbound-host,$(DOPACKAGES)))
@@ -38,13 +39,13 @@ ifneq (,$(filter unbound unbound-anchor unbound-host,$(DOPACKAGES)))
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="-Wl,--as-needed $(LDFLAGS)" \
 		dh_auto_configure -- \
 		--enable-subnet \
+		--disable-ecdsa \
 		--disable-rpath \
 		--with-pidfile=/run/unbound.pid \
 		--with-rootkey-file=/var/lib/unbound/root.key \
 		--with-libevent \
 		--with-pythonmodule \
 		--enable-dnstap \
-		--enable-systemd \
 		--with-dnstap-socket-path=/run/dnstap.sock \
 		--libdir=/usr/lib \
 		$(CONFIGURE_ARGS)
@@ -57,6 +58,7 @@ endif
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="-Wl,--as-needed $(LDFLAGS)" \
 		dh_auto_configure -- \
 		--enable-subnet \
+		--disable-ecdsa \
 		--disable-rpath \
 		--with-libunbound-only \
 		--with-nettle \
@@ -78,6 +80,7 @@ ifneq (,$(filter python-unbound,$(DOPACKAGES)))
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="-Wl,--as-needed $(LDFLAGS)" \
 		dh_auto_configure -- \
 		--enable-subnet \
+		--disable-ecdsa \
 		--disable-rpath \
 		--with-pythonmodule \
 		--with-pyunbound \
@@ -98,6 +101,7 @@ ifneq (,$(filter python3-unbound,$(DOPACKAGES)))
 	CFLAGS="$(CFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="-Wl,--as-needed $(LDFLAGS)" \
 		dh_auto_configure -- \
 		--enable-subnet \
+		--disable-ecdsa \
 		--disable-rpath \
 		--with-pythonmodule \
 		--with-pyunbound \
@@ -115,10 +119,6 @@ endif
 	dh_installdirs
 
 ifneq (,$(filter unbound unbound-anchor unbound-host,$(DOPACKAGES)))
-	dh_systemd_enable -p unbound
-	dh_systemd_enable -p unbound --name=unbound-resolvconf
-	dh_systemd_start -p unbound unbound.service
-
 	dh_installinit --error-handler=true --restart-after-upgrade
 
 	echo '$$named unbound' > debian/unbound/etc/insserv.conf.d/unbound

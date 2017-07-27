@@ -1,8 +1,10 @@
 unbound (1.6.4-1build1instart1) precise; urgency=low
 
   * --enable-subnet
+  * disable ECDSA, because precise openssl does not support it
+  * downgrade build-deps for precise
 
- -- Michael Weber <mweber@instartlogic.com>  Wed, 26 Jul 2017 11:53:33 -0700
+ -- Michael Weber <mweber@instartlogic.com>  Wed, 26 Jul 2017 18:53:22 -0700
 
 unbound (1.6.4-1build1) artful; urgency=medium
 
